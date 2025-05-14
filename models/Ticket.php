@@ -19,7 +19,7 @@ class Ticket
     $this->conn = $db;
   }
 
-  // Obtener todos los tickets
+  // Get all tickets
   public function read()
   {
     $query = "SELECT t.id, t.subject, t.message, t.status, t.created_at, t.updated_at, 
@@ -38,7 +38,7 @@ class Ticket
     return $result;
   }
 
-  // Obtener tickets por estado
+  // Get tickets by status
   public function readByStatus($status)
   {
     $query = "SELECT t.id, t.subject, t.message, t.status, t.created_at, t.updated_at, 
@@ -58,7 +58,7 @@ class Ticket
     return $stmt;
   }
 
-  // Obtener tickets por usuario creador
+  // Get tickets by creator user
   public function readByCreator($user_id)
   {
     $query = "SELECT t.id, t.subject, t.message, t.status, t.created_at, t.updated_at, 
@@ -78,7 +78,7 @@ class Ticket
     return $stmt;
   }
 
-  // Obtener un ticket por ID
+  // Get one ticket by id
   public function readOne($id): ?array
   {
     $query = "SELECT t.id, t.subject, t.message, t.status, t.created_at, t.updated_at, 
@@ -100,7 +100,7 @@ class Ticket
     return $row;
   }
 
-  // Crear un nuevo ticket
+  // Create ticket
   public function create($subject, $category, $message, $created_by)
   {
     $query = "INSERT INTO " . $this->table_name . " 
@@ -109,15 +109,13 @@ class Ticket
 
     $stmt = $this->conn->prepare($query);
 
-    // Sanitizar datos
     $this->subject = htmlspecialchars(strip_tags($this->subject));
     $this->message = htmlspecialchars(strip_tags($this->message));
     $this->category_id = htmlspecialchars(strip_tags($this->category_id));
     $this->created_by = htmlspecialchars(strip_tags($this->created_by));
-    $this->status = 'pending'; // Estado inicial: pendiente
+    $this->status = 'pending';
     $this->created_at = date('Y-m-d H:i:s');
 
-    // Vincular valores
     $stmt->bindParam(":subject", $subject);
     $stmt->bindParam(":message", $message);
     $stmt->bindParam(":category_id", $category);
@@ -132,7 +130,7 @@ class Ticket
     return false;
   }
 
-  // Asignar ticket
+  // Assign ticket to a user
   public function assign($id, $assigned_to)
   {
     $query = "UPDATE " . $this->table_name . " 
@@ -141,10 +139,8 @@ class Ticket
 
     $stmt = $this->conn->prepare($query);
 
-    // Sanitizar datos
     $this->assigned_to = htmlspecialchars(strip_tags($this->assigned_to));
 
-    // Vincular valores
     $stmt->bindParam(":assigned_to", $assigned_to);
     $stmt->bindParam(":id", $id);
 
@@ -155,7 +151,7 @@ class Ticket
     return false;
   }
 
-  // Actualizar estado del ticket
+  // Update ticket status
   public function updateStatus($id, $new_status)
   {
     $query = "UPDATE " . $this->table_name . " 
@@ -164,11 +160,9 @@ class Ticket
 
     $stmt = $this->conn->prepare($query);
 
-    // Sanitizar datos
     $this->status = in_array($this->status, ['pending', 'in_progress', 'resolved']) ? $this->status : 'pending';
     $this->updated_at = date('Y-m-d H:i:s');
 
-    // Vincular valores
     $stmt->bindParam(":status", $new_status);
     $stmt->bindParam(":updated_at", $this->updated_at);
     $stmt->bindParam(":id", $id);
@@ -180,7 +174,7 @@ class Ticket
     return false;
   }
 
-  // Actualizar categoría
+  // Update category
   public function updateCategory($id, $new_category)
   {
     $query = "UPDATE " . $this->table_name . " 
@@ -189,11 +183,9 @@ class Ticket
 
     $stmt = $this->conn->prepare($query);
 
-    // Sanitizar datos
     $this->category_id = htmlspecialchars(strip_tags($this->category_id));
     $this->updated_at = date('Y-m-d H:i:s');
 
-    // Vincular valores
     $stmt->bindParam(":category_id", $new_category);
     $stmt->bindParam(":updated_at", $this->updated_at);
     $stmt->bindParam(":id", $id);
@@ -204,6 +196,7 @@ class Ticket
     return false;
   }
 
+  // Get all tickets count by status
   public function getCountByStatus($status)
   {
     $query = "SELECT COUNT(*) as total 
@@ -212,16 +205,15 @@ class Ticket
 
     $stmt = $this->conn->prepare($query);
 
-    // Sanitizar datos
     $this->status = htmlspecialchars(strip_tags($this->status));
 
-    // Vincular valores
     $stmt->bindParam(":status", $status);
     $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     return $row;
   }
 
+  // Delete a ticket
   public function delete($id)
   {
     $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";

@@ -13,7 +13,7 @@ class Category
     $this->conn = $db;
   }
 
-  // Obtener todas las categorías
+  // Get all categories
   public function read()
   {
     $query = "SELECT * FROM " . $this->table_name;
@@ -23,7 +23,7 @@ class Category
     return $result;
   }
 
-  // Obtener una categoría por ID
+  // Get category by ID
   public function readOne()
   {
     $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
@@ -42,18 +42,16 @@ class Category
     return false;
   }
 
-  // Crear una nueva categoría
+  // Create new category
   public function create()
   {
     $query = "INSERT INTO " . $this->table_name . " SET name=:name, description=:description";
 
     $stmt = $this->conn->prepare($query);
 
-    // Sanitizar datos
     $this->name = htmlspecialchars(strip_tags($this->name));
     $this->description = htmlspecialchars(strip_tags($this->description));
 
-    // Vincular valores
     $stmt->bindParam(":name", $this->name);
     $stmt->bindParam(":description", $this->description);
 

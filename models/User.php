@@ -17,7 +17,7 @@ class User
     $this->conn = $db;
   }
 
-  // Obtener todos los usuarios
+  // Get all users
   public function read()
   {
     $query = "SELECT * FROM " . $this->table_name;
@@ -26,7 +26,7 @@ class User
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  // Obtener usuarios por rol
+  // Get all users by role
   public function readByRole($role)
   {
     $query = "SELECT * FROM " . $this->table_name . " WHERE role = :role";
@@ -36,7 +36,7 @@ class User
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  // Obtener un usuario por ID
+  // Get an user by ID
   public function readOne($id)
   {
     $query = "SELECT * FROM users WHERE id = :id LIMIT 1";
@@ -46,7 +46,7 @@ class User
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
-  // Autenticar usuario
+  // Authenticate user
   public function authenticate($email, $password)
   {
     $query = "SELECT * FROM " . $this->table_name . " WHERE email = :email";
@@ -69,7 +69,7 @@ class User
     return false;
   }
 
-  // Crear un nuevo usuario
+  // Create user
   public function create($name, $email, $role, $password, $profile_pic = null)
   {
     $query = "INSERT INTO " . $this->table_name . " SET name=:name, email=:email, password=:password, role=:role, created_at=:created_at";
@@ -80,14 +80,12 @@ class User
 
     $stmt = $this->conn->prepare($query);
 
-    // Sanitizar datos
     $this->name = htmlspecialchars(strip_tags($name));
     $this->email = htmlspecialchars(strip_tags($email));
     $this->password = password_hash($password, PASSWORD_DEFAULT);
     $this->role = htmlspecialchars(strip_tags($role));
     $this->created_at = date('Y-m-d H:i:s');
 
-    // Vincular valores
     $stmt->bindParam(":name", $this->name);
     $stmt->bindParam(":email", $this->email);
     $stmt->bindParam(":password", $this->password);

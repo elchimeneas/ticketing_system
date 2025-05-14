@@ -13,7 +13,7 @@ class Label
     $this->conn = $db;
   }
 
-  // Obtener todas las etiquetas
+  // Get all labels
   public function read()
   {
     $query = "SELECT * FROM " . $this->table_name;
@@ -22,7 +22,7 @@ class Label
     return $stmt;
   }
 
-  // Obtener etiquetas de un ticket
+  // Get a label by ticket
   public function readByTicket($ticket_id)
   {
     $query = "SELECT l.* FROM " . $this->table_name . " l
@@ -34,14 +34,13 @@ class Label
     return $stmt;
   }
 
-  // Asignar etiqueta a un ticket
+  // Assign label to ticket
   public function assignToTicket($ticket_id)
   {
     $query = "INSERT INTO ticket_labels SET ticket_id=:ticket_id, label_id=:label_id";
 
     $stmt = $this->conn->prepare($query);
 
-    // Vincular valores
     $stmt->bindParam(":ticket_id", $ticket_id);
     $stmt->bindParam(":label_id", $this->id);
 
@@ -52,14 +51,13 @@ class Label
     return false;
   }
 
-  // Eliminar etiqueta de un ticket
+  // Remove label from ticket
   public function removeFromTicket($ticket_id)
   {
     $query = "DELETE FROM ticket_labels WHERE ticket_id=:ticket_id AND label_id=:label_id";
 
     $stmt = $this->conn->prepare($query);
 
-    // Vincular valores
     $stmt->bindParam(":ticket_id", $ticket_id);
     $stmt->bindParam(":label_id", $this->id);
 
