@@ -29,9 +29,9 @@ class User
   // Obtener usuarios por rol
   public function readByRole($role)
   {
-    $query = "SELECT * FROM " . $this->table_name . " WHERE role = ?";
+    $query = "SELECT * FROM " . $this->table_name . " WHERE role = :role";
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(1, $role);
+    $stmt->bindParam(':role', $role);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
@@ -49,9 +49,9 @@ class User
   // Autenticar usuario
   public function authenticate($email, $password)
   {
-    $query = "SELECT * FROM " . $this->table_name . " WHERE email = ?";
+    $query = "SELECT * FROM " . $this->table_name . " WHERE email = :email";
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(1, $email);
+    $stmt->bindParam(':email', $email);
     $stmt->execute();
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);

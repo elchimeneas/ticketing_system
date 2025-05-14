@@ -26,9 +26,9 @@ class Category
   // Obtener una categoría por ID
   public function readOne()
   {
-    $query = "SELECT * FROM " . $this->table_name . " WHERE id = ?";
+    $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(1, $this->id);
+    $stmt->bindParam(':id', $this->id);
     $stmt->execute();
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);

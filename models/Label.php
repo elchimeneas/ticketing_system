@@ -27,9 +27,9 @@ class Label
   {
     $query = "SELECT l.* FROM " . $this->table_name . " l
                   JOIN ticket_labels tl ON l.id = tl.label_id
-                  WHERE tl.ticket_id = ?";
+                  WHERE tl.ticket_id = :ticket_id";
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(1, $ticket_id);
+    $stmt->bindParam(':ticket_id', $ticket_id);
     $stmt->execute();
     return $stmt;
   }

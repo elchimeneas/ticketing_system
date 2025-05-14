@@ -49,11 +49,11 @@ class Ticket
                   LEFT JOIN categories c ON t.category_id = c.id
                   LEFT JOIN users u1 ON t.created_by = u1.id
                   LEFT JOIN users u2 ON t.assigned_to = u2.id
-                  WHERE t.status = ?
+                  WHERE t.status = :status
                   ORDER BY t.created_at DESC";
 
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(1, $status);
+    $stmt->bindParam(':status', $status);
     $stmt->execute();
     return $stmt;
   }
@@ -69,11 +69,11 @@ class Ticket
                   LEFT JOIN categories c ON t.category_id = c.id
                   LEFT JOIN users u1 ON t.created_by = u1.id
                   LEFT JOIN users u2 ON t.assigned_to = u2.id
-                  WHERE t.created_by = ?
+                  WHERE t.created_by = :created_by
                   ORDER BY t.created_at DESC";
 
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(1, $user_id);
+    $stmt->bindParam(':created_by', $user_id);
     $stmt->execute();
     return $stmt;
   }
@@ -89,10 +89,10 @@ class Ticket
                   LEFT JOIN categories c ON t.category_id = c.id
                   LEFT JOIN users u1 ON t.created_by = u1.id
                   LEFT JOIN users u2 ON t.assigned_to = u2.id
-                  WHERE t.id = ?";
+                  WHERE t.id = :id";
 
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(1, $id);
+    $stmt->bindParam(':id', $id);
     $stmt->execute();
 
     $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -104,8 +104,8 @@ class Ticket
   public function create($subject, $category, $message, $created_by)
   {
     $query = "INSERT INTO " . $this->table_name . " 
-                  SET subject=:subject, message=:message, category_id=:category_id, 
-                      created_by=:created_by, status=:status, created_at=:created_at";
+    (subject, message, category_id, created_by, status, created_at) 
+    VALUES (:subject, :message, :category_id, :created_by, :status, :created_at)";
 
     $stmt = $this->conn->prepare($query);
 
@@ -136,7 +136,7 @@ class Ticket
   public function assign($id, $assigned_to)
   {
     $query = "UPDATE " . $this->table_name . " 
-                  SET assigned_to=:assigned_to
+                  (assigned_to) VALUES (:assigned_to)
                   WHERE id=:id";
 
     $stmt = $this->conn->prepare($query);
@@ -159,7 +159,7 @@ class Ticket
   public function updateStatus($id, $new_status)
   {
     $query = "UPDATE " . $this->table_name . " 
-                  SET status=:status, updated_at=:updated_at 
+                  (status, updated_at)  VALUES(:status, :updated_at) 
                   WHERE id=:id";
 
     $stmt = $this->conn->prepare($query);
@@ -184,7 +184,7 @@ class Ticket
   public function updateCategory($id, $new_category)
   {
     $query = "UPDATE " . $this->table_name . " 
-                  SET category_id=:category_id, updated_at=:updated_at 
+                  (category_id, updated_at) VALUES (:category_id, :updated_at) 
                   WHERE id=:id";
 
     $stmt = $this->conn->prepare($query);

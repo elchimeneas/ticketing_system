@@ -1,36 +1,46 @@
 -- Database creation
 CREATE DATABASE IF NOT EXISTS ticketing_system;
-USE ticketing_system;
+\c ticketing_system;  -- Esto es para conectarse a la base de datos después de crearla.
+
+-- Definir ENUMs
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role_enum') THEN
+        CREATE TYPE role_enum AS ENUM ('user', 'support', 'administrator');
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status_enum') THEN
+        CREATE TYPE status_enum AS ENUM ('pending', 'in_progress', 'resolved');
+    END IF;
+END $$;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role ENUM('user', 'support', 'administrator') NOT NULL DEFAULT 'user',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    role role_enum NOT NULL DEFAULT 'user',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     profile_pic VARCHAR(255) DEFAULT './assets/img/profilepic.webp'
 );
 
 -- Categories table
 CREATE TABLE IF NOT EXISTS categories (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT
 );
 
 -- Tickets table
 CREATE TABLE IF NOT EXISTS tickets (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     subject VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
     category_id INT,
     created_by INT NOT NULL,
     assigned_to INT,
-    status ENUM('pending', 'in_progress', 'resolved') NOT NULL DEFAULT 'pending',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
+    status status_enum NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id),
     FOREIGN KEY (created_by) REFERENCES users(id),
     FOREIGN KEY (assigned_to) REFERENCES users(id)
@@ -38,18 +48,18 @@ CREATE TABLE IF NOT EXISTS tickets (
 
 -- Files table
 CREATE TABLE IF NOT EXISTS attachments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     ticket_id INT NOT NULL,
     file_name VARCHAR(255) NOT NULL,
     file_path VARCHAR(255) NOT NULL,
     file_type VARCHAR(50) NOT NULL,
-    uploaded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    uploaded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE
 );
 
 -- Labels table
 CREATE TABLE IF NOT EXISTS labels (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     color VARCHAR(7) NOT NULL DEFAULT '#cccccc'
 );
@@ -65,24 +75,24 @@ CREATE TABLE IF NOT EXISTS ticket_labels (
 
 -- Settings table
 CREATE TABLE IF NOT EXISTS settings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     site_name VARCHAR(100) NOT NULL UNIQUE,
     admin_email VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- Chat messages table
 CREATE TABLE IF NOT EXISTS ticket_messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     ticket_id INT NOT NULL,
     user_id INT NOT NULL,
     message TEXT NOT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     can_reply BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- Example data, user passwords is: password123
+-- Example data, user passwords are: password123
 INSERT INTO users (name, email, password, role) VALUES
 ('Alex Thompson', 'user@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
 ('Emma Wilson', 'emma.wilson@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),

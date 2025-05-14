@@ -22,11 +22,11 @@ class TicketMessage
         $query = "SELECT m.*, u.name as user_name, u.role as user_role, u.profile_pic 
                  FROM " . $this->table_name . " m 
                  LEFT JOIN users u ON m.user_id = u.id 
-                 WHERE m.ticket_id = ? 
+                 WHERE m.ticket_id = :ticket_id 
                  ORDER BY m.created_at ASC";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $ticket_id);
+        $stmt->bindParam(':ticket_id', $ticket_id);
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -35,20 +35,27 @@ class TicketMessage
     // Create a new message
     public function create()
     {
+        if (is_null($this->ticket_id) || is_null($this->user_id) || is_null($this->message) || is_null($this->can_reply)) {
+            throw new Exception("Error: alguno de los parámetros es NULL.");
+        }
         $query = "INSERT INTO " . $this->table_name . " 
                  (ticket_id, user_id, message, can_reply) 
-                 VALUES (?, ?, ?, ?)";
+                 VALUES (:ticket_id, :user_id, :message, :can_reply)";
 
         $stmt = $this->conn->prepare($query);
 
         // Clean data
         $this->message = htmlspecialchars(strip_tags($this->message));
+        var_dump($this->ticket_id);
+        var_dump($this->user_id);
+        var_dump($this->message);
+        var_dump($this->can_reply);
 
         // Bind data
-        $stmt->bindParam(1, $this->ticket_id);
-        $stmt->bindParam(2, $this->user_id);
-        $stmt->bindParam(3, $this->message);
-        $stmt->bindParam(4, $this->can_reply);
+        $stmt->bindParam(':ticket_id', $this->ticket_id);
+        $stmt->bindParam(':user_id', $this->user_id);
+        $stmt->bindParam(':message', $this->message);
+        $stmt->bindParam(':can_reply', $this->can_reply, PDO::PARAM_BOOL);
 
         if ($stmt->execute()) {
             return true;
@@ -60,12 +67,12 @@ class TicketMessage
     public function getLastMessage($ticket_id)
     {
         $query = "SELECT * FROM " . $this->table_name . " 
-                 WHERE ticket_id = ? 
+                 WHERE ticket_id = :ticket_id
                  ORDER BY created_at DESC 
                  LIMIT 1";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $ticket_id);
+        $stmt->bindParam(':ticket_id', $ticket_id);
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
