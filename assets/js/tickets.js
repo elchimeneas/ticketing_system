@@ -17,13 +17,4 @@ function initTicketsPage() {
       filterForm.submit();
     });
   }
-
-  // Añadir eventos a las filas de la tabla para hacerlas clickeables
-  const tableRows = document.querySelectorAll("tbody tr");
-  tableRows.forEach((row) => {
-    row.addEventListener("click", function () {
-      const id = this.querySelector("td:first-child").textContent.trim();
-      window.location.href = `ticket_detail.php?id=${id}`;
-    });
-  });
 }
