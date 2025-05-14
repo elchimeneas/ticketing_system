@@ -78,6 +78,21 @@ class TicketMessage
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getTicketStatus($ticket_id)
+    {
+        $query = "SELECT status FROM tickets WHERE id = :ticket_id LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':ticket_id', $ticket_id);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row['status'];
+        }
+
+        return null; // Si no se encuentra el ticket
+    }
+
     // Check if user can reply
     public function canUserReply($ticket_id, $user_id, $user_role)
     {
@@ -85,6 +100,14 @@ class TicketMessage
 
         if (!$last_message) {
             return true; // If no messages, user can reply
+        }
+
+        // Verificar el estado del ticket
+        $ticket_status = $this->getTicketStatus($ticket_id);
+
+        // Si el ticket está resuelto, el usuario no puede responder
+        if ($ticket_status === 'resolved') {
+            return false;
         }
 
         // Support and admin can always reply
