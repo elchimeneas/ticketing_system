@@ -165,7 +165,7 @@ class Ticket
     $stmt = $this->conn->prepare($query);
 
     // Sanitizar datos
-    $this->status = htmlspecialchars(strip_tags($this->status));
+    $this->status = in_array($this->status, ['pending', 'in_progress', 'resolved']) ? $this->status : 'pending';
     $this->updated_at = date('Y-m-d H:i:s');
 
     // Vincular valores
