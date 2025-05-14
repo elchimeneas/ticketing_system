@@ -159,8 +159,8 @@ class Ticket
   public function updateStatus($id, $new_status)
   {
     $query = "UPDATE " . $this->table_name . " 
-                  (status, updated_at)  VALUES(:status, :updated_at) 
-                  WHERE id=:id";
+          SET status = :status, updated_at = :updated_at 
+          WHERE id = :id";
 
     $stmt = $this->conn->prepare($query);
 
