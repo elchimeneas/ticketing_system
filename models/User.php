@@ -72,11 +72,19 @@ class User
   // Create user
   public function create($name, $email, $role, $password, $profile_pic = null)
   {
-    $query = "INSERT INTO " . $this->table_name . " SET name=:name, email=:email, password=:password, role=:role, created_at=:created_at";
+    $query = "INSERT INTO " . $this->table_name . " (name, email, password, role, created_at";
 
     if ($profile_pic) {
-      $query .= ", profile_pic=:profile_pic";
+      $query .= ", profile_pic";
     }
+
+    $query .= ") VALUES (:name, :email, :password, :role, :created_at";
+
+    if ($profile_pic) {
+      $query .= ", :profile_pic";
+    }
+
+    $query .= ")";
 
     $stmt = $this->conn->prepare($query);
 

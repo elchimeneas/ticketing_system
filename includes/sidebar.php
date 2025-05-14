@@ -12,7 +12,11 @@
 
     <div class="flex items-center justify-center">
       <div class="flex items-center justify-center bg-primary-300 rounded-full w-[50px] h-[50px] overflow-hidden mr-2">
-        <img class="w-full" src="<?php echo $_SESSION['profile_pic']; ?>" alt="Profile pic of <?php echo $_SESSION['user_name']; ?>">
+        <img class="w-full" src="<?php if (empty($_SESSION['profile_pic'])) {
+                                    echo $_SESSION['profile_pic'];
+                                  } else {
+                                    echo "assets/img/profilepic.webp";
+                                  }; ?>" alt="Profile pic of <?php echo $_SESSION['user_name']; ?>">
       </div>
       <span><strong><?php echo $_SESSION['user_name']; ?></strong></span>
     </div>
