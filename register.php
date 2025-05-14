@@ -54,8 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         mkdir($upload_dir, 0777, true);
                     }
 
-                    // Generate unique filename
-                    $new_filename = $username . "_profile_pic." . $file_extension;
+                    $file_hash = md5_file($tmp_file);
+                    $new_filename = $username . "_profile_pic_" . $file_hash . "." . $file_extension; // Using the file hash
                     $upload_path = $upload_dir . $new_filename;
 
                     // Move file
