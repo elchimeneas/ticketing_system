@@ -59,10 +59,10 @@ include 'includes/header.php';
 
 <div id="content" class="ml-64 transition-all duration-300 p-8">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">Gestión de Tickets</h1>
+    <h1 class="text-2xl font-bold">Ticket Details</h1>
     <a href="new_ticket.php" class="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-lg flex items-center">
       <i class="fas fa-plus mr-2"></i>
-      <span>Nuevo Ticket</span>
+      <span>New Ticket</span>
     </a>
   </div>
 
@@ -70,7 +70,7 @@ include 'includes/header.php';
   <div class="bg-white rounded-lg shadow p-4 mb-6">
     <form action="tickets.php" method="GET" class="flex flex-wrap gap-4">
       <div class="flex-1 min-w-[200px]">
-        <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
+        <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
         <div class="relative">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <i class="fas fa-search text-gray-400"></i>
@@ -85,10 +85,10 @@ include 'includes/header.php';
         <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
         <select id="status" name="status"
           class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-          <option value="all" <?php echo $status === 'all' || $status === '' ? 'selected' : ''; ?>>Todos</option>
-          <option value="pending" <?php echo $status === 'pending' ? 'selected' : ''; ?>>Pendientes</option>
-          <option value="in_progress" <?php echo $status === 'in_progress' ? 'selected' : ''; ?>>En Progreso</option>
-          <option value="resolved" <?php echo $status === 'resolved' ? 'selected' : ''; ?>>Resueltos</option>
+          <option value="all" <?php echo $status === 'all' || $status === '' ? 'selected' : ''; ?>>All</option>
+          <option value="pending" <?php echo $status === 'pending' ? 'selected' : ''; ?>>Pending</option>
+          <option value="in_progress" <?php echo $status === 'in_progress' ? 'selected' : ''; ?>>In Progress</option>
+          <option value="resolved" <?php echo $status === 'resolved' ? 'selected' : ''; ?>>Resolved</option>
         </select>
       </div>
 
@@ -103,26 +103,26 @@ include 'includes/header.php';
     </form>
   </div>
 
-  <!-- Lista de tickets -->
+  <!-- Tickets list -->
   <div class="bg-white rounded-lg shadow overflow-hidden">
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asunto</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Creado por</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asignado a</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Topic</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created by</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned to</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <?php if (empty($tickets)): ?>
           <tr>
             <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
-              No se encontraron tickets
+              No tickets found
             </td>
           </tr>
         <?php else: ?>
@@ -140,11 +140,11 @@ include 'includes/header.php';
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <?php if ($t['status'] === 'pending'): ?>
-                    <span class="badge badge-pending">Pendiente</span>
+                    <span class="badge badge-pending">Pending</span>
                   <?php elseif ($t['status'] === 'in_progress'): ?>
-                    <span class="badge badge-in-progress">En Progreso</span>
+                    <span class="badge badge-in-progress">In Progress</span>
                   <?php else: ?>
-                    <span class="badge badge-resolved">Resuelto</span>
+                    <span class="badge badge-resolved">Resolved</span>
                   <?php endif; ?>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -182,11 +182,11 @@ include 'includes/header.php';
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <?php if ($t['status'] === 'pending'): ?>
-                        <span class="badge badge-pending">Pendiente</span>
+                        <span class="badge badge-pending">Pending</span>
                       <?php elseif ($t['status'] === 'in_progress'): ?>
-                        <span class="badge badge-in-progress">En Progreso</span>
+                        <span class="badge badge-in-progress">In Progress</span>
                       <?php else: ?>
-                        <span class="badge badge-resolved">Resuelto</span>
+                        <span class="badge badge-resolved">Resolved</span>
                       <?php endif; ?>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -216,8 +216,8 @@ include 'includes/header.php';
   </div>
   <?php if ($success): ?>
     <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-      <p class="font-bold">Éxito</p>
-      <p>El ticket ha sido eliminado correctamente.</p>
+      <p class="font-bold">Success</p>
+      <p>Ticket has been deleted successfully.</p>
     </div>
   <?php endif; ?>
 
@@ -229,25 +229,25 @@ include 'includes/header.php';
   <?php endif; ?>
 </div>
 
-<!-- Modal de confirmación para eliminar ticket -->
+<!-- Confirmation deleting modal -->
 <div id="confirm-modal" class="modal">
   <div class="modal-content max-w-md w-full">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-bold">Confirmar Eliminación</h2>
+      <h2 class="text-xl font-bold">Confirm deleting</h2>
       <button id="close-confirm-modal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
         <i class="fas fa-times"></i>
       </button>
     </div>
-    <p class="mb-6">¿Estás seguro de que deseas eliminar el ticket #<span id="ticket-id-confirm" class="font-semibold"></span>? Esta acción no se puede deshacer.</p>
+    <p class="mb-6">¿Are you sure want to delete ticket #<span id="ticket-id-confirm" class="font-semibold"></span>? This cannot be undone.</p>
     <form id="delete-form" action="tickets.php" method="POST">
       <input type="hidden" id="delete_ticket_id" name="ticket_id" value="">
       <input type="hidden" name="action" value="delete">
       <div class="flex justify-end">
         <button type="button" id="cancel-delete" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-md mr-2">
-          Cancelar
+          Cancel
         </button>
         <button type="submit" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md">
-          Eliminar
+          Delete
         </button>
       </div>
     </form>
@@ -261,7 +261,7 @@ include 'includes/header.php';
     const cancelDeleteBtn = document.getElementById('cancel-delete');
     const deleteTicketBtns = document.querySelectorAll('.delete-user-btn');
 
-    // Abrir modal para confirmar eliminación
+    // Open deleting modal
     deleteTicketBtns.forEach(btn => {
       btn.addEventListener('click', function(event) {
         event.preventDefault();
@@ -273,7 +273,7 @@ include 'includes/header.php';
       });
     });
 
-    // Cerrar modal de confirmación
+    // Close deleting modal
     closeConfirmModalBtn.addEventListener('click', function() {
       confirmModal.classList.remove('active');
     });
@@ -282,7 +282,7 @@ include 'includes/header.php';
       confirmModal.classList.remove('active');
     });
 
-    // Cerrar modal al hacer clic fuera de él
+    // Close modal when clic is out of it
     window.addEventListener('click', function(event) {
       if (event.target === confirmModal) {
         confirmModal.classList.remove('active');

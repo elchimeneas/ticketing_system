@@ -100,7 +100,7 @@ include 'includes/header.php';
     <div class="bg-green-50 rounded-lg shadow p-6">
       <div class="flex items-center">
         <i class="fas fa-check-circle text-green-600 mr-2"></i>
-        <div class="text-gray-500 text-sm">Solved</div>
+        <div class="text-gray-500 text-sm">Resolved</div>
       </div>
       <div class="text-3xl font-bold text-green-600"><?php echo $resolvedTickets; ?></div>
     </div>

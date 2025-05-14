@@ -67,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div id="content" class="ml-64 transition-all duration-300 p-8">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">Configuración del Sistema</h1>
+    <h1 class="text-2xl font-bold">System Configuration</h1>
   </div>
 
   <?php if ($success): ?>
     <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-      <p class="font-bold">Éxito</p>
-      <p>La configuración ha sido guardada correctamente.</p>
+      <p class="font-bold">Success</p>
+      <p>Configuration has been updated successfully.</p>
     </div>
   <?php endif; ?>
 
@@ -89,16 +89,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="gap-6">
         <!-- Configuración General -->
         <div>
-          <h2 class="text-lg font-semibold mb-4">Configuración General</h2>
+          <h2 class="text-lg font-semibold mb-4">General configuration</h2>
 
           <div class="mb-4">
-            <label for="site_name" class="block text-sm font-medium text-gray-700 mb-1">Nombre del Sitio *</label>
+            <label for="site_name" class="block text-sm font-medium text-gray-700 mb-1">Website Name *</label>
             <input type="text" id="site_name" name="site_name" value="<?php echo htmlspecialchars($settings[0]['site_name']); ?>" required
               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
           </div>
 
           <div class="mb-4">
-            <label for="admin_email" class="block text-sm font-medium text-gray-700 mb-1">Email del Administrador *</label>
+            <label for="admin_email" class="block text-sm font-medium text-gray-700 mb-1">Administrator Email *</label>
             <input type="email" id="admin_email" name="admin_email" value="<?php echo htmlspecialchars($settings[0]['admin_email']); ?>" required
               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
           </div>
@@ -106,10 +106,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="pt-6 mt-6">
           <div class="flex justify-center">
             <button type="reset" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-md mr-2">
-              Restablecer
+              Restore
             </button>
             <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-md">
-              Guardar Configuración
+              Save Config
             </button>
           </div>
         </div>

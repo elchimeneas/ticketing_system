@@ -121,18 +121,18 @@ include 'includes/header.php';
       </div>
 
       <?php if ($ticket[0]['status'] === 'pending'): ?>
-        <span class="badge badge-pending">Pendiente</span>
+        <span class="badge badge-pending">Pending</span>
       <?php elseif ($ticket[0]['status'] === 'in_progress'): ?>
-        <span class="badge badge-in-progress">En Progreso</span>
+        <span class="badge badge-in-progress">In Progress</span>
       <?php else: ?>
-        <span class="badge badge-resolved">Resuelto</span>
+        <span class="badge badge-resolved">Resolved</span>
       <?php endif; ?>
     </div>
 
     <?php if ($success): ?>
       <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-        <p class="font-bold">Éxito</p>
-        <p>El ticket ha sido actualizado correctamente.</p>
+        <p class="font-bold">Success</p>
+        <p>Ticket updated successfully.</p>
       </div>
     <?php endif; ?>
 
@@ -150,7 +150,7 @@ include 'includes/header.php';
         <div>
           <div class="flex items-center text-gray-500 text-sm mb-1">
             <i class="fas fa-user mr-2"></i>
-            <span>Creado por:</span>
+            <span>Created by:</span>
           </div>
           <div class="font-medium"><?php echo htmlspecialchars($ticket[0]['created_by_name']); ?></div>
         </div>
@@ -158,7 +158,7 @@ include 'includes/header.php';
         <div>
           <div class="flex items-center text-gray-500 text-sm mb-1">
             <i class="fas fa-user-check mr-2"></i>
-            <span>Asignado a:</span>
+            <span>Assigned to:</span>
           </div>
           <div class="font-medium"><?php echo $ticket[0]['assigned_to_name'] ? htmlspecialchars($ticket[0]['assigned_to_name']) : 'Sin asignar'; ?></div>
         </div>
@@ -166,7 +166,7 @@ include 'includes/header.php';
         <div>
           <div class="flex items-center text-gray-500 text-sm mb-1">
             <i class="fas fa-folder mr-2"></i>
-            <span>Categoría:</span>
+            <span>Category:</span>
           </div>
           <div class="font-medium"><?php echo htmlspecialchars($ticket[0]['category_name']); ?></div>
         </div>
@@ -174,14 +174,14 @@ include 'includes/header.php';
         <div>
           <div class="flex items-center text-gray-500 text-sm mb-1">
             <i class="fas fa-calendar mr-2"></i>
-            <span>Fecha:</span>
+            <span>Date:</span>
           </div>
           <div class="font-medium"><?php echo date('d/m/Y H:i', strtotime($ticket[0]['created_at'])); ?></div>
         </div>
       </div>
 
       <div class="border-t border-gray-200 pt-4">
-        <h3 class="text-lg font-medium mb-2">Descripción</h3>
+        <h3 class="text-lg font-medium mb-2">Description</h3>
         <p class="text-gray-700 whitespace-pre-line"><?php echo htmlspecialchars($ticket[0]['message']); ?></p>
       </div>
     </div>
@@ -238,18 +238,33 @@ include 'includes/header.php';
           </div>
         </form>
       <?php else: ?>
-        <div class="mt-4 bg-yellow-50 border-l-4 border-yellow-400 p-4">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <i class="fas fa-exclamation-triangle text-yellow-400"></i>
-            </div>
-            <div class="ml-3">
-              <p class="text-sm text-yellow-700">
-                Please wait for support team to respond before sending another message.
-              </p>
+        <?php if ($ticket[0]['status'] === 'resolved'): ?>
+          <div class="mt-4 bg-green-50 border-l-4 border-green-400 p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <i class="fas fa-check text-green-400"></i>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-green-700">
+                  Ticket is resolved, thanks for use our ticketing system.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        <?php else: ?>
+          <div class="mt-4 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-yellow-700">
+                  Please wait for support team to respond before sending another message.
+                </p>
+              </div>
+            </div>
+          </div>
+        <?php endif; ?>
       <?php endif; ?>
     </div>
 
@@ -257,15 +272,15 @@ include 'includes/header.php';
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <?php if ($ticket[0]['status'] === 'pending'): ?>
           <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-medium mb-4">Asignar Ticket</h3>
+            <h3 class="text-lg font-medium mb-4">Assign Ticket</h3>
             <form action="ticket_detail.php?id=<?php echo $ticket[0]['id']; ?>" method="POST">
               <input type="hidden" name="action" value="assign">
 
               <div class="mb-4">
-                <label for="assigned_to" class="block text-sm font-medium text-gray-700 mb-1">Asignar a</label>
+                <label for="assigned_to" class="block text-sm font-medium text-gray-700 mb-1">Assign to</label>
                 <select id="assigned_to" name="assigned_to" required
                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-                  <option value="">Selecciona un usuario</option>
+                  <option value="">Select an user</option>
                   <?php foreach ($support_users as $user): ?>
                     <option value="<?php echo $user['id']; ?>"><?php echo htmlspecialchars($user['name']); ?> (<?php echo ucfirst($user['role']); ?>)</option>
                   <?php endforeach; ?>
@@ -279,7 +294,7 @@ include 'includes/header.php';
           </div>
 
           <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-medium mb-4">Cambiar categoria</h3>
+            <h3 class="text-lg font-medium mb-4">Change category</h3>
             <form action="ticket_detail.php?id=<?php echo $ticket[0]['id']; ?>" method="POST">
               <input type="hidden" name="action" value="update_category">
 
@@ -287,7 +302,7 @@ include 'includes/header.php';
                 <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Asignar a</label>
                 <select id="category" name="category" required
                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-                  <option value="">Selecciona una categoría</option>
+                  <option value="">Select a category</option>
                   <?php foreach ($categories as $item): ?>
                     <option value="<?php echo $item['id']; ?>"><?php echo $item["name"] ?></option>
                   <?php endforeach; ?>
@@ -295,7 +310,7 @@ include 'includes/header.php';
               </div>
 
               <button type=" submit" class="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-md">
-                Cambiar
+                Change
               </button>
             </form>
           </div>
@@ -303,7 +318,7 @@ include 'includes/header.php';
 
         <?php if ($ticket[0]['status'] !== 'resolved' || isAdminOrSupport()): ?>
           <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-medium mb-4">Actualizar Estado</h3>
+            <h3 class="text-lg font-medium mb-4">Update status</h3>
             <form action="ticket_detail.php?id=<?php echo $ticket[0]['id']; ?>" method="POST">
               <input type="hidden" name="action" value="update_status">
 
@@ -311,15 +326,15 @@ include 'includes/header.php';
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                 <select id="status" name="status" required
                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-                  <option value="">Selecciona un estado</option>
-                  <option value="pending" <?php echo $ticket[0]['status'] === 'pending' ? 'selected' : ''; ?>>Pendiente</option>
-                  <option value="in_progress" <?php echo $ticket[0]['status'] === 'in_progress' ? 'selected' : ''; ?>>En Progreso</option>
-                  <option value="resolved">Resuelto</option>
+                  <option value="">Select a status</option>
+                  <option value="pending" <?php echo $ticket[0]['status'] === 'pending' ? 'selected' : ''; ?>>Pending</option>
+                  <option value="in_progress" <?php echo $ticket[0]['status'] === 'in_progress' ? 'selected' : ''; ?>>In Progress</option>
+                  <option value="resolved">Resolved</option>
                 </select>
               </div>
 
               <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-md">
-                Actualizar Estado
+                Update Status
               </button>
             </form>
           </div>

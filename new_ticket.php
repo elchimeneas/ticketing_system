@@ -40,20 +40,20 @@ include 'includes/header.php';
 
 <div id="content" class="ml-64 transition-all duration-300 p-8">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">Crear Nuevo Ticket</h1>
+    <h1 class="text-2xl font-bold">Create New Ticket</h1>
     <a href="tickets.php" class="text-primary-600 hover:text-primary-800 flex items-center">
       <i class="fas fa-arrow-left mr-2"></i>
-      <span>Volver a la lista</span>
+      <span>Back to the list</span>
     </a>
   </div>
 
   <?php if ($success): ?>
     <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-      <p class="font-bold">Éxito</p>
-      <p>El ticket ha sido creado correctamente.</p>
+      <p class="font-bold">Success</p>
+      <p>Ticket has been created successfully.</p>
       <div class="mt-3">
         <a href="tickets.php" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md inline-block">
-          Ver todos los tickets
+          See all tickets
         </a>
       </div>
     </div>
@@ -69,13 +69,13 @@ include 'includes/header.php';
     <div class="bg-white rounded-lg shadow p-6">
       <form action="new_ticket.php" method="POST">
         <div class="mb-4">
-          <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Asunto *</label>
+          <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Topic *</label>
           <input type="text" id="subject" name="subject" required
             class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
         </div>
 
         <div class="mb-4">
-          <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Categoría *</label>
+          <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">Category *</label>
           <select id="category_id" name="category_id" required
             class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
             <option value="">Selecciona una categoría</option>
@@ -86,17 +86,17 @@ include 'includes/header.php';
         </div>
 
         <div class="mb-6">
-          <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Descripción *</label>
+          <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
           <textarea id="message" name="message" rows="6" required
             class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"></textarea>
         </div>
 
         <div class="flex justify-end">
           <a href="tickets.php" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-md mr-2">
-            Cancelar
+            Cancel
           </a>
           <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-md">
-            Crear Ticket
+            Create Ticket
           </button>
         </div>
       </form>
