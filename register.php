@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $file = $_FILES['profilepic'];
                 $allowed_types = ['image/jpeg', 'image/png', 'image/webp'];
                 $allowed_extensions = ['jpg', 'jpeg', 'png', 'webp'];
+                $tmp_file = $file['tmp_name'];
 
                 // Get file extension
                 $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));

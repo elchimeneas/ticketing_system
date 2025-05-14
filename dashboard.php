@@ -68,7 +68,7 @@ include 'includes/header.php';
     <h1 class="text-2xl font-bold">Dashboard</h1>
     <div class="flex items-center justify-center">
       <div class="flex items-center justify-center bg-primary-300 rounded-full w-[50px] h-[50px] overflow-hidden mr-2">
-        <img class="w-full" src="<?php if (empty($_SESSION['profile_pic'])) {
+        <img class="w-full" src="<?php if (!empty($_SESSION['profile_pic'])) {
                                     echo $_SESSION['profile_pic'];
                                   } else {
                                     echo "assets/img/profilepic.webp";
