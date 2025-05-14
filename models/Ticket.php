@@ -136,7 +136,7 @@ class Ticket
   public function assign($id, $assigned_to)
   {
     $query = "UPDATE " . $this->table_name . " 
-                  (assigned_to) VALUES (:assigned_to)
+                  SET assigned_to = :assigned_to
                   WHERE id=:id";
 
     $stmt = $this->conn->prepare($query);
@@ -184,7 +184,7 @@ class Ticket
   public function updateCategory($id, $new_category)
   {
     $query = "UPDATE " . $this->table_name . " 
-                  (category_id, updated_at) VALUES (:category_id, :updated_at) 
+                  SET category_id = :category_id, updated_at = :updated_at 
                   WHERE id=:id";
 
     $stmt = $this->conn->prepare($query);
