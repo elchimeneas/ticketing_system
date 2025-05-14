@@ -1,10 +1,11 @@
 <?php
 class Database
 {
-  private $host = "localhost";
-  private $db_name = "ticketing_system";
-  private $username = "root";
-  private $password = "";
+  private $host = "aws-0-eu-west-2.pooler.supabase.com";
+  private $db_name = "postgres";
+  private $username = "postgres.auktrmhxykcwiprrtmzr";
+  private $password = "alumno";
+  private $port = 6543;
   public $conn;
 
   public function getConnection()
@@ -12,8 +13,8 @@ class Database
     $this->conn = null;
 
     try {
-      $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
-      $this->conn->exec("set names utf8");
+      $dsn = "pgsql:host={$this->host};port={$this->port};dbname={$this->db_name}";
+      $this->conn = new PDO($dsn, $this->username, $this->password);
     } catch (PDOException $exception) {
       echo "Error de conexión: " . $exception->getMessage();
     }
