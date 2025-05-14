@@ -44,14 +44,12 @@ class TicketMessage
 
         $stmt = $this->conn->prepare($query);
 
-        // Clean data
         $this->message = htmlspecialchars(strip_tags($this->message));
         var_dump($this->ticket_id);
         var_dump($this->user_id);
         var_dump($this->message);
         var_dump($this->can_reply);
 
-        // Bind data
         $stmt->bindParam(':ticket_id', $this->ticket_id);
         $stmt->bindParam(':user_id', $this->user_id);
         $stmt->bindParam(':message', $this->message);
@@ -90,7 +88,7 @@ class TicketMessage
             return $row['status'];
         }
 
-        return null; // Si no se encuentra el ticket
+        return null; // If ticket not exists
     }
 
     // Check if user can reply
@@ -102,11 +100,10 @@ class TicketMessage
             return true; // If no messages, user can reply
         }
 
-        // Verificar el estado del ticket
         $ticket_status = $this->getTicketStatus($ticket_id);
 
-        // Si el ticket está resuelto, el usuario no puede responder
-        if ($ticket_status === 'resolved') {
+        // If ticket is resolved, user cannot reply, admins always can reply
+        if ($ticket_status === 'resolved' && $user_role !== 'administrator') {
             return false;
         }
 
