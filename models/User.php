@@ -111,6 +111,56 @@ class User
     return false;
   }
 
+  // Update user
+  public function update($id, $name = null, $email = null, $role = null, $password = null, $profile_pic = null)
+  {
+    $query = "UPDATE " . $this->table_name . " SET ";
+    $fields = [];
+    $params = [];
+
+    if ($name !== null) {
+      $fields[] = "name = :name";
+      $params[':name'] = htmlspecialchars(strip_tags($name));
+    }
+
+    if ($email !== null) {
+      $fields[] = "email = :email";
+      $params[':email'] = htmlspecialchars(strip_tags($email));
+    }
+
+    if ($role !== null) {
+      $fields[] = "role = :role";
+      $params[':role'] = htmlspecialchars(strip_tags($role));
+    }
+
+    if ($password !== null) {
+      $fields[] = "password = :password";
+      $params[':password'] = password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    if ($profile_pic !== null) {
+      $fields[] = "profile_pic = :profile_pic";
+      $params[':profile_pic'] = $profile_pic;
+    }
+
+    if (empty($fields)) {
+      return false;
+    }
+
+    $query .= implode(', ', $fields);
+    $query .= " WHERE id = :id";
+
+    $stmt = $this->conn->prepare($query);
+
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+    foreach ($params as $param => $value) {
+      $stmt->bindValue($param, $value);
+    }
+
+    return $stmt->execute();
+  }
+
   public function delete($id)
   {
     try {

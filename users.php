@@ -50,36 +50,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
   }
 }
 
-// Create user
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'create') {
-  $name = isset($_POST['name']) ? trim($_POST['name']) : '';
-  $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-  $password = isset($_POST['password']) ? trim($_POST['password']) : '';
-  $role = isset($_POST['role']) ? trim($_POST['role']) : '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+  $action = $_POST['action'] ?? '';
+  $user_id = $_POST['user_id'] ?? null;
+  $name = isset($_POST['name']) ? trim($_POST['name']) : null;
+  $email = isset($_POST['email']) ? trim($_POST['email']) : null;
+  $password = isset($_POST['password']) && $_POST['password'] !== '' ? trim($_POST['password']) : null;
+  $role = isset($_POST['user_role']) ? trim($_POST['user_role']) : null;
 
-  if (empty($name)) {
-    $error = 'El nombre es obligatorio.';
-  } else if (empty($email)) {
-    $error = 'El email es obligatorio.';
-  } else if (empty($password)) {
-    $error = 'La contraseña es obligatoria.';
-  } else if (empty($role)) {
-    $error = 'El rol es obligatorio.';
-  } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $error = 'El formato del email no es válido.';
-  } else if (strlen($password) < 8) {
-    $error = 'La contraseña debe tener al menos 8 caracteres.';
-  } else if (!in_array($role, ['user', 'support', 'administrator'])) {
-    $error = 'El rol seleccionado no es válido.';
-  } else {
-    if ($user_model->create($name, $email, $role, $password)) {
-      $success = true;
-      $users = $user_model->read();
+
+  $edit_action = $_POST['edit-action'] ?? '';
+  $edit_user_id = $_POST['edit-user_id'] ?? null;
+  $edit_name = isset($_POST['edit-name']) ? trim($_POST['edit-name']) : null;
+  $edit_email = isset($_POST['edit-email']) ? trim($_POST['edit-email']) : null;
+  $edit_password = isset($_POST['edit-password']) && $_POST['edit-password'] !== '' ? trim($_POST['edit-password']) : null;
+  $edit_role = isset($_POST['edit-user_role']) ? trim($_POST['edit-user_role']) : null;
+
+
+  if ($action === 'create') {
+    // Validación para crear
+    if (!$name || !$email || !$password || !$role) {
+      $error = 'Todos los campos son obligatorios.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      $error = 'Formato de email inválido.';
+    } elseif (strlen($password) < 8) {
+      $error = 'La contraseña debe tener al menos 8 caracteres.';
+    } elseif (!in_array($role, ['user', 'support', 'administrator'])) {
+      $error = 'Rol inválido.';
     } else {
-      $error = 'Error al crear el usuario. Por favor intente nuevamente.';
+      if ($user_model->create($name, $email, $role, $password)) {
+        $success = true;
+      } else {
+        $error = 'Error al crear el usuario.';
+      }
     }
   }
+
+  if ($edit_action === 'update' && $user_id) {
+    // Validación básica (puedes añadir más si lo deseas)
+    if (!filter_var($edit_email, FILTER_VALIDATE_EMAIL)) {
+      $error = 'Formato de email inválido.';
+    } elseif ($edit_password && strlen($edit_password) < 8) {
+      $error = 'La contraseña debe tener al menos 8 caracteres.';
+    } elseif (!in_array($edit_role, ['user', 'support', 'administrator'])) {
+      $error = 'Rol inválido.';
+    } else {
+      if ($user_model->update($edit_user_id, $edit_name, $edit_email, $edit_role, $edit_password)) {
+        $success = true;
+      } else {
+        $error = 'Error al actualizar el usuario.';
+      }
+    }
+  }
+
+  // Leer usuarios tras la acción
+  $users = $user_model->read();
 }
+
 
 include 'includes/header.php';
 ?>
@@ -215,7 +242,7 @@ include 'includes/header.php';
 </div>
 
 <!-- New User Modal -->
-<div id="user-modal" class="modal">
+<div id="new-user-modal" class="modal">
   <div class="modal-content max-w-md w-full">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-bold" id="modal-title">New User</h2>
@@ -262,14 +289,69 @@ include 'includes/header.php';
           Cancel
         </button>
         <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-md">
-          Save
+          Create
         </button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Modal de confirmación para eliminar -->
+<!-- Edit user modal -->
+<div id="edit-user-modal" class="modal">
+  <div class="modal-content max-w-md w-full">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold" id="modal-title">Edit User</h2>
+      <button id="edit-close-modal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <form id="edit-user-form" action="users.php" method="POST">
+      <input type="hidden" id="edit-user_id" name="edit-user_id" value="">
+      <input type="hidden" id="edit-action" name="edit-action" value="update">
+
+      <div class="mb-4">
+        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+        <input type="text" id="edit-name" name="name"
+          class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+      </div>
+
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+        <input type="email" id="edit-email" name="email"
+          class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+      </div>
+
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+        <input type="password" id="edit-password" name="password"
+          class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+        <p class="text-xs text-gray-500 mt-1" id="edit-password-hint">Password must have almost 8 characters.</p>
+      </div>
+
+      <div class="mb-6">
+        <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+        <select id="edit-user_role" name="role"
+          class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+          <option value="user">User</option>
+          <option value="support">Support</option>
+          <option value="administrator">Administrator</option>
+        </select>
+      </div>
+
+      <div class="flex justify-end">
+        <button type="button" id="edit-cancel-form" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-md mr-2">
+          Cancel
+        </button>
+        <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-md">
+          Update
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!--Confirmation delete user modal -->
 <div id="confirm-modal" class="modal">
   <div class="modal-content max-w-md w-full">
     <div class="flex justify-between items-center mb-4">
@@ -299,8 +381,8 @@ include 'includes/header.php';
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Referencias a elementos del DOM
-    const userModal = document.getElementById('user-modal');
+    // DOM References
+    const newUserModal = document.getElementById('new-user-modal');
     const confirmModal = document.getElementById('confirm-modal');
     const newUserBtn = document.getElementById('new-user-btn');
     const closeModalBtn = document.getElementById('close-modal');
@@ -311,27 +393,42 @@ include 'includes/header.php';
     const deleteUserBtns = document.querySelectorAll('.delete-user-btn');
     const userForm = document.getElementById('user-form');
 
-    // Abrir modal para nuevo usuario
+    // DOM References to edit user modal
+    const editUserModal = document.getElementById('edit-user-modal');
+    const editCloseModalBtn = document.getElementById('edit-close-modal');
+    const editCancelFormBtn = document.getElementById('edit-cancel-form');
+    const editUserForm = document.getElementById('edit-user-form');
+
+    // Open new user modal
     newUserBtn.addEventListener('click', function() {
-      document.getElementById('modal-title').textContent = 'Nuevo Usuario';
+      document.getElementById('modal-title').textContent = 'New User';
       document.getElementById('user_id').value = '';
       document.getElementById('action').value = 'create';
       document.getElementById('password').required = true;
       document.getElementById('password-hint').style.display = 'block';
       userForm.reset();
-      userModal.classList.add('active');
+      newUserModal.classList.add('active');
     });
 
-    // Cerrar modal de usuario
+    // Close user modal
     closeModalBtn.addEventListener('click', function() {
-      userModal.classList.remove('active');
+      newUserModal.classList.remove('active');
     });
 
     cancelFormBtn.addEventListener('click', function() {
-      userModal.classList.remove('active');
+      newUserModal.classList.remove('active');
     });
 
-    // Cerrar modal de confirmación
+    // Close edit user modal
+    editCloseModalBtn.addEventListener('click', function() {
+      editUserModal.classList.remove('active');
+    });
+
+    editCancelFormBtn.addEventListener('click', function() {
+      editUserModal.classList.remove('active');
+    });
+
+    // Close user deleting confirmation modal
     closeConfirmModalBtn.addEventListener('click', function() {
       confirmModal.classList.remove('active');
     });
@@ -340,30 +437,31 @@ include 'includes/header.php';
       confirmModal.classList.remove('active');
     });
 
-    // Abrir modal para editar usuario
+    // Open user model
     editUserBtns.forEach(btn => {
       btn.addEventListener('click', function() {
         const userId = this.getAttribute('data-id');
-        document.getElementById('modal-title').textContent = 'Editar Usuario';
-        document.getElementById('user_id').value = userId;
-        document.getElementById('action').value = 'update';
-        document.getElementById('password').required = false;
-        document.getElementById('password-hint').style.display = 'none';
+        document.getElementById('modal-title').textContent = 'Edit User';
+        document.getElementById('edit-user_id').value = userId;
+        document.getElementById('edit-action').value = 'update';
+        document.getElementById('edit-password').required = false;
+        document.getElementById('edit-password-hint').style.display = 'none';
+        editUserModal.classList.add('active');
 
-        // Obtener datos reales del usuario por AJAX
+        // Get user data from AJAX method
         fetch('get_user.php?id=' + userId)
           .then(response => response.json())
           .then(user => {
+            console.log(user);
             if (user && user.id) {
-              document.getElementById('name').value = user.name || '';
-              document.getElementById('email').value = user.email || '';
-              document.getElementById('user_role').value = user.role || '';
+              document.getElementById('edit-name').value = user.name || '';
+              document.getElementById('edit-email').value = user.email || '';
+              document.getElementById('edit-user_role').value = user.role || '';
             } else {
-              document.getElementById('name').value = '';
-              document.getElementById('email').value = '';
-              document.getElementById('user_role').value = '';
+              document.getElementById('edit-name').value = '';
+              document.getElementById('edit-email').value = '';
+              document.getElementById('edit-user_role').value = '';
             }
-            userModal.classList.add('active');
           });
       });
     });
