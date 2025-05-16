@@ -35,6 +35,11 @@ class Ticket
     $stmt = $this->conn->prepare($query);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Descent order
+    usort($result, function ($a, $b) {
+      return $b['id'] <=> $a['id'];
+    });
     return $result;
   }
 
