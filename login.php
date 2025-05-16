@@ -40,7 +40,8 @@ include 'includes/header.php';
 
 <div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full space-y-8">
-    <div>
+    <div class="flex flex-col items-center justify-center">
+      <img src="assets/img/logo.png" alt="Ticketing System Logo" class="h-[200px] w-[200px]">
       <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
         Ticketing System
       </h2>

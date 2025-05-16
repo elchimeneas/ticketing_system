@@ -7,7 +7,7 @@ Sistema de gestión de tickets de soporte desarrollado en PHP, con interfaz mode
 - **Gestión de usuarios**: Registro, inicio de sesión y roles (`user`, `support`, `administrator`).
 - **Creación y seguimiento de tickets**: Los usuarios pueden crear tickets, asignar categorías y etiquetas, y seguir su estado.
 - **Sistema de mensajería en tickets**: Comunicación entre usuarios y personal de soporte dentro de cada ticket.
-- **Carga de archivos adjuntos**: Los usuarios pueden adjuntar archivos relevantes a sus tickets.
+- **Carga de archivos adjuntos**: Los usuarios pueden adjuntar archivos relevantes a sus tickets. *EN DESAROLLO*
 - **Panel de administración**: Visualización y gestión de usuarios, tickets, categorías y etiquetas.
 - **Configuración del sistema**: Personalización de ajustes generales como nombre del sitio y correo del administrador.
 
@@ -35,6 +35,7 @@ ticketing_system/
 ├── new_ticket.php      # Formulario para crear nuevos tickets
 ├── settings.php        # Configuración del sistema
 ├── users.php           # Gestión de usuarios
+├── user_panel.php      # Panel de usuario, información personal.
 ├── logout.php          # Cierre de sesión
 └── README.md           # Documentación del proyecto
 ```
